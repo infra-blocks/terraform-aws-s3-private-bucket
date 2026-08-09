@@ -8,7 +8,8 @@ terraform {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.name
+  bucket           = var.name
+  bucket_namespace = var.namespace
 
   tags = merge(var.tags, {
     Name = var.name
@@ -37,16 +38,16 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
 
   rule {
     dynamic "apply_server_side_encryption_by_default" {
-      for_each = var.default_encryption_kms_key_id != null ? [0] : []
+      for_each = var.default_encryption_kms_key_arn != null ? [0] : []
 
       content {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = var.default_encryption_kms_key_id
+        kms_master_key_id = var.default_encryption_kms_key_arn
       }
     }
 
     dynamic "apply_server_side_encryption_by_default" {
-      for_each = var.default_encryption_kms_key_id != null ? [] : [0]
+      for_each = var.default_encryption_kms_key_arn != null ? [] : [0]
 
       # This type of encryption is enabled by AWS by default now. We keep it here mainly for clarity.
       content {
@@ -54,7 +55,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
       }
     }
 
-    bucket_key_enabled = var.default_encryption_kms_key_id != null
+    bucket_key_enabled = var.default_encryption_kms_key_arn != null
   }
 }
 

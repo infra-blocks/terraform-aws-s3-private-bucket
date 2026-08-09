@@ -1,9 +1,18 @@
+variable "namespace" {
+  type        = string
+  description = <<EOT
+The bucket namespace. Valid values are "account-regional" or "global".
+When omitted, AWS defaults to "global".
+EOT
+  default     = null
+}
+
 variable "name" {
   type        = string
   description = "The name of the bucket."
 }
 
-variable "default_encryption_kms_key_id" {
+variable "default_encryption_kms_key_arn" {
   type        = string
   description = "The default encryption KMS key to use. If none is provided, it defaults to the AES256 encryption algorithm"
   default     = null
